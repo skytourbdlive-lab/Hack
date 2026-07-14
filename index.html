@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🚨 CRITICAL SYSTEM EXPLOIT 🚨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            background-color: #020000;
+            color: #ff1a1a;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* প্রিমিয়াম লাইভ ব্যাকগ্রাউন্ড কোড রেইন */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.6; 
+        }
+
+        /* মূল ইন্টারফেস */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: radial-gradient(circle, rgba(10,0,0,0.2) 0%, rgba(2,0,0,0.85) 100%);
+        }
+
+        /* প্রিমিয়াম অ্যালার্ট বক্স */
+        .warning-card {
+            background: rgba(10, 1, 1, 0.9);
+            border: 2.5px solid #ff0000;
+            border-radius: 15px;
+            padding: 20px 15px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 35px rgba(255, 0, 0, 0.5), inset 0 0 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .pulse-bg {
+            animation: warningPulse 1.2s infinite alternate;
+        }
+
+        @keyframes warningPulse {
+            0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); border-color: #aa0000; }
+            100% { box-shadow: 0 0 45px rgba(255, 0, 0, 0.8); border-color: #ff0000; }
+        }
+
+        .critical-notice {
+            background: #ff0000;
+            color: #fff;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: bold;
+            font-size: 13px;
+            padding: 8px 10px;
+            border-radius: 5px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 10px #ff0000;
+            animation: flash 0.8s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .title {
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        /* স্ট্যাটাস ইন্ডিকেটর (নতুন ফিচার) */
+        .status-text {
+            font-size: 14px;
+            color: #ffea00;
+            font-weight: bold;
+            margin-bottom: 12px;
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        /* অ্যানিমেশন বক্স (নতুন ফিচার) */
+        .animation-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #110000;
+            border: 1px solid #ff3333;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            position: relative;
+            height: 60px;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(255,0,0,0.3);
+        }
+
+        .icon-source, .icon-dest {
+            font-size: 28px;
+            z-index: 3;
+            background: #110000;
+            padding: 0 5px;
+        }
+
+        .icon-dest {
+            animation: shakeDest 2s infinite;
+        }
+
+        @keyframes shakeDest {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1) rotate(-5deg); color: #ff0000; }
+        }
+
+        /* উড়ন্ত ফাইলের স্টাইল */
+        .moving-file {
+            position: absolute;
+            left: 45px;
+            font-size: 20px;
+            z-index: 2;
+            animation: flyToBin 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes flyToBin {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+            20% { transform: translate(40px, -10px) scale(1); opacity: 1; }
+            80% { transform: translate(220px, 0) scale(1); opacity: 1; }
+            100% { transform: translate(260px, 10px) scale(0); opacity: 0; }
+        }
+
+        .file-log {
+            font-size: 11px;
+            color: #ff8080;
+            margin-bottom: 12px;
+            height: 14px;
+            overflow: hidden;
+        }
+
+        /* টাইমার ও ইনপুট */
+        .timer-box {
+            font-size: 35px;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px #ff0000;
+        }
+
+        .input-group { margin-bottom: 12px; }
+
+        .pin-label {
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 11px;
+            color: #ff8080;
+            display: block;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .pin-input {
+            width: 75%;
+            background: #1a0000;
+            border: 1.5px solid #ff0000;
+            color: #fff;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            border-radius: 5px;
+            outline: none;
+            font-family: monospace;
+            letter-spacing: 5px;
+            box-shadow: inset 0 0 5px #000;
+        }
+
+        .pin-input:focus { box-shadow: 0 0 12px rgba(255, 0, 0, 0.7); }
+
+        .btn-abort {
+            width: 75%;
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+            transition: all 0.2s;
+        }
+
+        .btn-abort:active {
+            background: #990000;
+            transform: scale(0.98);
+        }
+
+        .glitch-shake { animation: screenShake 0.1s infinite; }
+
+        @keyframes screenShake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-2px, 0px) rotate(1deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            60% { transform: translate(-2px, 1px) rotate(0deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* ব্যাক বাটন পপআপ */
+        .back-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px;
+        }
+
+        .back-modal-card {
+            background: #0f0101; border: 2.5px solid #ff0000; border-radius: 15px; padding: 25px; text-align: center; max-width: 350px; box-shadow: 0 0 30px #ff0000;
+        }
+
+        .back-modal-title {
+            font-family: 'Hind Siliguri', sans-serif; color: #ff1a1a; margin-bottom: 15px; font-size: 19px; font-weight: bold;
+        }
+
+        .back-modal-text {
+            font-family: 'Hind Siliguri', sans-serif; color: #ff9999; font-size: 13.5px; line-height: 1.6; margin-bottom: 20px; text-align: center;
+        }
+
+        .back-modal-btn {
+            background: #333; color: #888; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; font-family: 'Hind Siliguri', sans-serif; cursor: not-allowed; width: 100%; transition: background 0.3s;
+        }
+
+        /* টুইস্ট স্ক্রিন */
+        .reveal-screen {
+            display: none; width: 100%; max-width: 380px; background: #ffffff; padding: 40px 30px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .big-emoji { font-size: 80px; margin-bottom: 18px; animation: bounce 1.8s infinite; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .prank-title { font-family: 'Hind Siliguri', sans-serif; color: #ff1a1a; font-size: 26px; font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
+
+        .prank-text { font-family: 'Hind Siliguri', sans-serif; font-size: 16px; line-height: 1.6; color: #333333; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="overlay-container" id="mainOverlay">
+        
+        <div class="warning-card pulse-bg" id="scareBox">
+            <div class="critical-notice">⚠️ ভুলবশতও এই পেজটি বন্ধ বা মিনিমাইজ করবেন না!</div>
+            
+            <h1 class="title">ডিভাইস ডাটা রিমুভ প্রসেসিং...</h1>
+            <div class="status-text" id="sysStatus">SYSTEM: SCANNING DEVICE DATA...</div>
+            
+            <div class="animation-box" id="animBox">
+                <div class="icon-source">📱</div>
+                <div class="icon-dest">🗑️</div>
+                </div>
+            <div class="file-log" id="fileLog">Targeting directories...</div>
+
+            <p style="font-family: 'Hind Siliguri', sans-serif; font-size: 12.5px; color: #ffb3b3; margin-bottom: 15px; text-align: justify; line-height: 1.4;">
+                আপনার ডিভাইস স্ক্যান সম্পন্ন হয়েছে। গ্যালারির সমস্ত ছবি এবং পার্সোনাল ডকুমেন্ট সার্ভারে রিমুভ হওয়ার জন্য জমা হচ্ছে। টাইমার শেষ হওয়ার আগেই সঠিক পিন দিন, অন্যথায় সমস্ত ডাটা চিরতরে মুছে যাবে।
+            </p>
+
+            <div class="timer-box" id="timer">02:00</div>
+
+            <div class="input-group">
+                <span class="pin-label">ENTER BYPASS PIN TO STOP:</span>
+                <input type="password" class="pin-input" id="pinField" placeholder="••••" maxlength="6" inputmode="numeric">
+            </div>
+
+            <button class="btn-abort" id="btnAbort" onclick="attemptStop()">STOP EXPLOIT</button>
+        </div>
+
+        <div class="reveal-screen" id="revealBox">
+            <div class="big-emoji">🤪🔥</div>
+            <h2 class="prank-title">কিরে ভাই লল ভয় পাইছস!</h2>
+            <p class="prank-text">
+                ইকোমো ভাই তো এত অল্পতেই ভয় পেয়ে গেলি কেমনে কি! 😂<br><br>
+                জাস্ট একটা প্র্যাঙ্ক ছিল! তোর কোনো ডাটা কোথাও যায়নি আর যাওয়ার ক্ষমতাও আমার নাই। এবার একটু হেসেন তো ভাই! 🥰
+            </p>
+        </div>
+
+    </div>
+
+    <div class="back-modal-overlay" id="backModal">
+        <div class="back-modal-card">
+            <h3 class="back-modal-title">🚨 গুরুতর সতর্কতা! 🚨</h3>
+            <p class="back-modal-text" id="backModalText">
+                আপনি এখন এই মুহূর্তে ব্যাক করে দিলে, বাইপাস পিন না দিয়ে ব্যাক করলে আপনার সমস্ত ডাটা অটোমেটিক রিমুভ হয়ে যাবে যেহেতু আপনি একবার এক্সেস করে ফেলেছেন। দয়া করে প্রসেসটি বন্ধ হওয়া পর্যন্ত অপেক্ষা করুন...
+            </p>
+            <button class="back-modal-btn" id="modalOkBtn" disabled>অপেক্ষা করুন (৩ সেকেন্ড)</button>
+        </div>
+    </div>
+
+<script>
+    /* ================= এডভান্সড কোড রেইন ব্যাকগ্রাউন্ড ================= */
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+    const matrixWords = ["0", "1", "0101", "SYS_ERR", "BYPASS_PORT", "EXPLOIT", "ROOT_ACCESS", "IP_TRACED", "CRITICAL", "FORMATTING", "PORT_80", "FATAL_ERROR", "D9_F2", "MEM_DUMP", "DECRYPTING"];
+    const fontSize = 14; let columns = Math.floor(canvas.width / fontSize); let rainDrops = [];
+    for (let x = 0; x < columns; x++) rainDrops[x] = 1;
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(2, 0, 0, 0.12)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = 'bold ' + fontSize + 'px monospace'; ctx.shadowBlur = 4; ctx.shadowColor = '#ff0000';
+        for (let i = 0; i < rainDrops.length; i++) {
+            const text = matrixWords[Math.floor(Math.random() * matrixWords.length)];
+            ctx.fillStyle = Math.random() > 0.85 ? '#ffffff' : '#ff0000'; 
+            ctx.fillText(text, i * fontSize * 3.5, rainDrops[i] * fontSize);
+            if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.985) rainDrops[i] = 0;
+            rainDrops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 40);
+
+    /* ================= ফাইল ট্রান্সফার অ্যানিমেশন (নতুন) ================= */
+    const fileIcons = ['🖼️', '📄', '🎵', '🎥', '📁', '📸'];
+    const extensions = ['.jpg', '.png', '.mp4', '.pdf', '.docx'];
+    const animBox = document.getElementById('animBox');
+    const fileLog = document.getElementById('fileLog');
+    const sysStatus = document.getElementById('sysStatus');
+    
+    let fileAnimInterval;
+
+    function startFileTransfer() {
+        fileAnimInterval = setInterval(() => {
+            if (document.getElementById('scareBox').style.display === 'none') {
+                clearInterval(fileAnimInterval);
+                return;
+            }
+            // ১. আইকন তৈরি করে অ্যানিমেশন বক্সে যুক্ত করা
+            const fileEl = document.createElement('div');
+            fileEl.className = 'moving-file';
+            fileEl.innerText = fileIcons[Math.floor(Math.random() * fileIcons.length)];
+            animBox.appendChild(fileEl);
+            
+            // ১.২ সেকেন্ড পর আইকন রিমুভ করা
+            setTimeout(() => { if(animBox.contains(fileEl)) animBox.removeChild(fileEl); }, 1200);
+
+            // ২. রিয়ালিস্টিক লগ টেক্সট আপডেট
+            const randomNum = Math.floor(Math.random() * 9999);
+            const ext = extensions[Math.floor(Math.random() * extensions.length)];
+            fileLog.innerText = `Selecting: /DCIM/Media_FILE_${randomNum}${ext} ... Queued for removal.`;
+
+        }, 450); // প্রতি ৪৫০ মিলি-সেকেন্ডে একটি করে ফাইল উড়বে
+    }
+
+    // স্ট্যাটাস টেক্সট পরিবর্তন (স্ক্যানিং থেকে ডিলিটিং)
+    setTimeout(() => {
+        sysStatus.innerText = "WARNING: REMOVAL PROCESS INITIATED!";
+        sysStatus.style.color = "#ff0000";
+    }, 15000); // ১৫ সেকেন্ড পর স্ট্যাটাস পাল্টে যাবে
+
+
+    /* ================= ফুলস্ক্রিন ও ভাইব্রেশন একটিভেশন ================= */
+    let systemInitialized = false;
+    function initializeSystem() {
+        if (systemInitialized) return;
+        systemInitialized = true;
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); 
+        
+        startVibrationCycle();
+        startFileTransfer(); // প্রথম টাচেই ফাইল ট্রান্সফার এনিমেশন শুরু হবে
+    }
+    document.addEventListener('click', initializeSystem);
+    document.addEventListener('touchstart', initializeSystem);
+
+
+    /* ================= ১২০ সেকেন্ডের লাইভ কাউন্টডাউন ================= */
+    let timeLeft = 120; 
+    const timerElement = document.getElementById('timer');
+    const countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            triggerReveal(); 
+        } else {
+            timeLeft--;
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerElement.innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        }
+    }, 1000);
+
+
+    /* ================= ভাইব্রেশন ও স্ক্রিন শেক প্যাটার্ন ================= */
+    const scareBox = document.getElementById('scareBox');
+    function startVibrationCycle() {
+        setInterval(() => {
+            if (document.getElementById('scareBox').style.display !== 'none') {
+                scareBox.classList.add('glitch-shake');
+                if (navigator.vibrate) navigator.vibrate([250, 100, 250, 100, 400]);
+                setTimeout(() => { scareBox.classList.remove('glitch-shake'); }, 1000);
+            }
+        }, 5000);
+    }
+
+
+    /* ================= ব্যাক বাটন ট্র্যাপ এবং কাস্টম লক ================= */
+    function trapBackButton() {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            showCustomBackModal();
+            history.pushState(null, null, location.href);
+        };
+    }
+    function showCustomBackModal() {
+        const modal = document.getElementById('backModal');
+        const okBtn = document.getElementById('modalOkBtn');
+        if (document.getElementById('scareBox').style.display === 'none') return;
+
+        modal.style.display = 'flex';
+        let secondsLeft = 3;
+        okBtn.disabled = true;
+        okBtn.style.background = "#220000"; okBtn.style.color = "#777"; okBtn.style.cursor = "not-allowed";
+        okBtn.innerText = `অপেক্ষা করুন (${secondsLeft}s)`;
+
+        const modalTimer = setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft <= 0) {
+                clearInterval(modalTimer);
+                okBtn.disabled = false;
+                okBtn.style.background = "#ff0000"; okBtn.style.color = "#ffffff"; okBtn.style.cursor = "pointer";
+                okBtn.innerText = "ঠিক আছে, আমি বুঝতে পেরেছি";
+                okBtn.onclick = function() { modal.style.display = 'none'; };
+            } else {
+                okBtn.innerText = `অপেক্ষা করুন (${secondsLeft}s)`;
+            }
+        }, 1000);
+    }
+    window.addEventListener('DOMContentLoaded', trapBackButton);
+
+
+    /* ================= পিন সাবমিট ও প্র্যাঙ্ক রিভিল ================= */
+    function attemptStop() {
+        const pinVal = document.getElementById('pinField').value;
+        const btn = document.getElementById('btnAbort');
+        if (!pinVal) { alert("অনুগ্রহ করে অথোরাইজেশন পিন টাইপ করুন!"); return; }
+
+        btn.disabled = true;
+        btn.innerText = "VERIFYING BYPASS KEY...";
+        btn.style.background = "#440000";
+        scareBox.classList.add('glitch-shake');
+
+        setTimeout(() => {
+            scareBox.classList.remove('glitch-shake');
+            triggerReveal();
+        }, 1800);
+    }
+
+    function triggerReveal() {
+        clearInterval(countdown);
+        clearInterval(fileAnimInterval); // ফাইল এনিমেশন স্টপ
+        
+        document.getElementById('scareBox').style.display = 'none';
+        document.getElementById('revealBox').style.display = 'block';
+        
+        document.body.style.background = 'linear-gradient(135deg, #ffe3e3 0%, #fbc2eb 100%)';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('matrixCanvas').style.display = 'none';
+        
+        if (document.exitFullscreen) document.exitFullscreen();
+        if (navigator.vibrate) navigator.vibrate(0);
+    }
+</script>
+
+</body>
+</html>
