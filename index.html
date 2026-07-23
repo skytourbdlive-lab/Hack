@@ -3,88 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>প্রিমিয়াম স্মার্ট অফিস প্রেজেন্ট সিস্টেম</title>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <title>প্রিমিয়াম ৩ডি স্মার্ট প্রেজেন্ট সিস্টেম</title>
     <style>
         :root {
             --primary: #4f46e5;
             --primary-hover: #4338ca;
             --success: #10b981;
             --danger: #ef4444;
-            --bg-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
         }
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: var(--bg-gradient); min-height: 100vh; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        body { 
+            background: var(--bg-gradient); 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
         
+        /* 3D Glassmorphism Effect */
         .container { 
             background: var(--card-bg); 
-            backdrop-filter: blur(10px);
-            border-radius: 20px; 
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px; 
             padding: 30px; 
             width: 100%; 
-            max-width: 550px; 
+            max-width: 500px; 
             box-shadow: var(--shadow);
-            transform: translateY(0);
-            transition: all 0.3s ease;
+            transform: perspective(1000px) rotateX(0deg);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .container:hover { transform: translateY(-3px); }
 
-        h2, h3 { text-align: center; color: #1e293b; margin-top: 0; }
+        h2, h3 { text-align: center; color: #0f172a; margin-top: 0; font-weight: 800; }
         
-        input, select { 
-            width: 100%; padding: 14px; margin: 10px 0 18px; 
-            border: 2px solid #e2e8f0; border-radius: 12px; font-size: 15px; 
+        input { 
+            width: 100%; padding: 14px 18px; margin: 10px 0 16px; 
+            border: 2px solid #cbd5e1; border-radius: 14px; font-size: 15px; 
             transition: 0.3s; background: #f8fafc;
         }
-        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2); }
 
         button { 
-            width: 100%; padding: 14px; background: var(--primary); color: white; 
-            border: none; border-radius: 12px; font-size: 16px; font-weight: bold; 
-            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            width: 100%; padding: 15px; background: var(--primary); color: white; 
+            border: none; border-radius: 14px; font-size: 16px; font-weight: bold; 
+            cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
         }
-        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        button:active { transform: translateY(1px); }
         
-        .btn-secondary { background: #64748b; box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); margin-top: 8px; }
-        .btn-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
-        .btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        .btn-secondary { background: #475569; box-shadow: 0 6px 15px rgba(71, 85, 105, 0.3); margin-top: 10px; }
+        .btn-danger { background: var(--danger); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3); }
+        .btn-success { background: var(--success); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3); }
 
         .hidden { display: none !important; }
         .status { margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px; }
         
-        /* 3D Stats Card */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 15px 0; }
-        .stat-card { background: #f1f5f9; padding: 15px; border-radius: 12px; text-align: center; border-left: 5px solid var(--primary); }
-        .stat-card h4 { margin: 0; color: #64748b; font-size: 13px; }
-        .stat-card p { margin: 5px 0 0; font-size: 20px; font-weight: bold; color: #1e293b; }
+        /* 3D Dashboard Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 15px 0; }
+        .stat-card { 
+            background: #ffffff; padding: 15px; border-radius: 16px; text-align: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid var(--primary);
+        }
+        .stat-card h4 { margin: 0; color: #64748b; font-size: 12px; text-transform: uppercase; }
+        .stat-card p { margin: 6px 0 0; font-size: 18px; font-weight: 800; color: #0f172a; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: #fff; border-radius: 10px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; }
         th, td { border: 1px solid #f1f5f9; padding: 10px; text-align: center; }
         th { background: var(--primary); color: white; }
 
-        .notice-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; color: #1e40af; }
+        .notice-box { background: #e0e7ff; border-left: 5px solid var(--primary); padding: 12px; border-radius: 10px; margin-bottom: 15px; color: #3730a3; font-weight: 600; }
         
-        /* Modal for Error Video/Image */
-        #error-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: #fff; padding: 25px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
-        .modal-content img, .modal-content video { width: 100%; border-radius: 10px; max-height: 250px; object-fit: cover; }
+        /* Modal for Error */
+        #error-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #fff; padding: 25px; border-radius: 20px; text-align: center; max-width: 380px; width: 90%; }
+        .modal-content img { width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- ১. লগইন ও রেজিস্ট্রেশন স্ক্রিন -->
+    <!-- ১. অথেন্টিকেশন স্ক্রিন -->
     <div id="auth-screen">
         <h2>🏢 অফিস প্রেজেন্ট সিস্টেম</h2>
+        
         <div id="register-box">
-            <h3>নতুন অ্যাকাউন্ট তৈরি</h3>
-            <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম">
+            <h3>নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
+            <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম লিখুন">
             <input type="text" id="regId" placeholder="আপনার ইউনিক আইডি (যেমন: 101)">
-            <button onclick="registerUser()">অ্যাকাউন্ট রেজিস্টার করুন</button>
+            <button onclick="registerUser()">অ্যাকাউন্ট খুলুন</button>
             <button class="btn-secondary" onclick="toggleAuth(true)">ইতিমধ্যে অ্যাকাউন্ট আছে? লগইন করুন</button>
         </div>
 
@@ -92,7 +104,7 @@
             <h3>ইউজার লগইন</h3>
             <input type="text" id="loginId" placeholder="আপনার আইডি নম্বর দিন">
             <button onclick="loginUser()">লগইন করুন</button>
-            <button class="btn-secondary" onclick="toggleAuth(false)">নতুন অ্যাকাউন্ট খুলুন</button>
+            <button class="btn-secondary" onclick="toggleAuth(false)">নতুন অ্যাকাউন্ট রেজিস্টার করুন</button>
         </div>
         
         <button class="btn-danger" style="margin-top: 15px;" onclick="showAdminLogin()">এডমিন প্যানেল</button>
@@ -102,41 +114,41 @@
     <!-- ২. ইউজার ড্যাশবোর্ড -->
     <div id="user-dashboard" class="hidden">
         <h2>👤 ইউজার ড্যাশবোর্ড</h2>
-        <div class="notice-box" id="user-notice">লোডিং নোটিশ...</div>
+        <div class="notice-box" id="user-notice">📢 নোটিশ: সময়মত উপস্থিত থাকুন।</div>
         
         <div class="stats-grid">
             <div class="stat-card">
                 <h4>নাম</h4>
-                <p id="dash-name" style="font-size: 16px;"></p>
+                <p id="dash-name">-</p>
             </div>
             <div class="stat-card">
                 <h4>আইডি</h4>
-                <p id="dash-id"></p>
+                <p id="dash-id">-</p>
             </div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <h4>এ মাসের উপস্থিতি</h4>
+                <h4>মোট উপস্থিতি</h4>
                 <p id="present-count">0 দিন</p>
             </div>
             <div class="stat-card">
-                <h4>স্ট্যাটাস</h4>
-                <p id="attendance-state" style="color: var(--success);">প্রস্তুত</p>
+                <h4>আজকের স্ট্যাটাস</h4>
+                <p id="today-status" style="color: var(--danger);">বাকি আছে</p>
             </div>
         </div>
 
-        <button class="btn-success" style="padding: 18px; font-size: 18px; margin-top: 10px;" onclick="submitAttendance()">✅ আজকের উপস্থিতি (Present)</button>
+        <button class="btn-success" style="padding: 18px; font-size: 18px; margin-top: 10px;" onclick="submitAttendance()">📍 আজকের উপস্থিতি (DONE)</button>
         <button class="btn-secondary" onclick="logout()">লগআউট</button>
         <p id="attendance-status" class="status"></p>
     </div>
 
-    <!-- ৩. এডমিন লগইন স্ক্রিন -->
+    <!-- ৩. এডমিন লগইন -->
     <div id="admin-login-screen" class="hidden">
         <h2>🔐 এডমিন সিকিউরিটি</h2>
         <input type="password" id="adminPinInput" placeholder="এডমিন পাসওয়ার্ড দিন (rabby11)">
         <button onclick="verifyAdmin()">প্রবেশ করুন</button>
-        <button class="btn-secondary" onclick="showHome()">ফিরে যান</button>
+        <button class="btn-secondary" onclick="showHome()">হোমে ফিরুন</button>
         <p id="admin-login-status" class="status"></p>
     </div>
 
@@ -145,18 +157,11 @@
         <h2>🛠️ এডমিন কন্ট্রোল প্যানেল</h2>
         
         <div style="margin-bottom: 15px;">
-            <input type="text" id="noticeInput" placeholder="অফিস নোটিশ বা ঘোষণা লিখুন...">
-            <button class="btn-success" onclick="updateNotice()">নোটিশ আপডেট করুন</button>
+            <input type="text" id="noticeInput" placeholder="নতুন নোটিশ লিখুন...">
+            <button class="btn-success" onclick="updateNotice()">নোটিশ পাবলিশ করুন</button>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <input type="text" id="errorMediaInput" placeholder="ফানি ভিডিও/ছবির লিংক (URL) দিন...">
-            <button class="btn-danger" onclick="updateErrorMedia()">এরর মিডিয়া সেট করুন</button>
-        </div>
-
-        <h3>সকল ইউজারের উপস্থিতি তালিকা</h3>
-        <button class="btn-secondary" onclick="exportToCSV()" style="margin-bottom: 10px;">📥 রিপোর্ট ডাউনলোড (CSV)</button>
-        
+        <h3>উপস্থিতির তালিকা</h3>
         <div style="overflow-x:auto; max-height: 250px;">
             <table>
                 <thead>
@@ -171,43 +176,29 @@
                 <tbody id="admin-attendance-logs"></tbody>
             </table>
         </div>
-        <button class="btn-secondary" onclick="showHome()" style="margin-top: 15px;">লগআউট / হোম</button>
+        <button class="btn-secondary" onclick="showHome()" style="margin-top: 15px;">লগআউট</button>
     </div>
 </div>
 
-<!-- ফানি এরর মডাল (ওয়াইফাই বা অন্য এরর হলে শো করবে) -->
+<!-- এরর মডাল -->
 <div id="error-modal" class="hidden">
     <div class="modal-content">
-        <h3 style="color: var(--danger);">⚠️ হাজিরা ব্যর্থ!</h3>
-        <div id="error-media-container">
-            <!-- ফানি ছবি বা ভিডিও এখানে রেন্ডার হবে -->
-            <img src="https://media.giphy.com/media/3o7TKSjRrfIPjeiOkM/giphy.gif" alt="Funny Error">
-        </div>
-        <p id="error-modal-msg" style="margin: 15px 0; font-weight: bold;"></p>
+        <h3 style="color: var(--danger);">⚠️ সমস্যা হয়েছে!</h3>
+        <img src="https://media.giphy.com/media/3o7TKSjRrfIPjeiOkM/giphy.gif" alt="Error GIF">
+        <p id="error-modal-msg" style="margin: 15px 0; font-weight: bold; color: #333;"></p>
         <button onclick="closeErrorModal()">ঠিক আছে</button>
     </div>
 </div>
 
 <script>
-    // 🔥 আপনার ফায়ারবেস কনফিগারেশন এখানে বসাবেন
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // অফিস ওয়াইফাই আইপি (ভবিষ্যতে সেট করার জন্য ভেরিয়েবল)
-    const OFFICE_IP = ""; 
+    // লোকাল স্টোরেজ ডাটাবেজ হেলপার
+    function getUsers() { return JSON.parse(localStorage.getItem('sys_users') || '{}'); }
+    function setUsers(users) { localStorage.setItem('sys_users', JSON.stringify(users)); }
+    function getAttendance() { return JSON.parse(localStorage.getItem('sys_attendance') || '[]'); }
+    function setAttendance(att) { localStorage.setItem('sys_attendance', JSON.stringify(att)); }
 
     window.onload = function() {
-        const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+        const savedUser = JSON.parse(localStorage.getItem('sys_currentUser'));
         if (savedUser) {
             openUserDashboard(savedUser.name, savedUser.id);
         }
@@ -217,6 +208,7 @@
     function toggleAuth(showLogin) {
         document.getElementById('register-box').classList.toggle('hidden', showLogin);
         document.getElementById('login-box').classList.toggle('hidden', !showLogin);
+        document.getElementById('auth-status').innerText = "";
     }
 
     function showHome() {
@@ -231,7 +223,7 @@
         document.getElementById('admin-login-screen').classList.remove('hidden');
     }
 
-    // ইউজার রেজিস্ট্রেশন
+    // ১. নতুন রেজিস্ট্রেশন
     function registerUser() {
         const name = document.getElementById('regName').value.trim();
         const id = document.getElementById('regId').value.trim();
@@ -239,22 +231,27 @@
 
         if(!name || !id) {
             status.style.color = "var(--danger)";
-            status.innerText = "সবগুলো ঘর পূরণ করুন!";
+            status.innerText = "দয়া করে নাম এবং আইডি দুটিই লিখুন!";
             return;
         }
 
-        db.ref('users/' + id).set({ name: name, id: id }, (error) => {
-            if(!error) {
-                localStorage.setItem('currentUser', JSON.stringify({name: name, id: id}));
-                openUserDashboard(name, id);
-            } else {
-                status.style.color = "var(--danger)";
-                status.innerText = "রেজিস্ট্রেশনে সমস্যা হয়েছে!";
-            }
-        });
+        const users = getUsers();
+        if(users[id]) {
+            status.style.color = "var(--danger)";
+            status.innerText = "এই আইডি দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে! লগইন করুন।";
+            return;
+        }
+
+        users[id] = { name: name, id: id };
+        setUsers(users);
+        localStorage.setItem('sys_currentUser', JSON.stringify({name: name, id: id}));
+        
+        status.style.color = "var(--success)";
+        status.innerText = "অ্যাকাউন্ট তৈরি সফল হয়েছে!";
+        setTimeout(() => openUserDashboard(name, id), 800);
     }
 
-    // ইউজার লগইন
+    // ২. ইউজার লগইন
     function loginUser() {
         const id = document.getElementById('loginId').value.trim();
         const status = document.getElementById('auth-status');
@@ -265,16 +262,15 @@
             return;
         }
 
-        db.ref('users/' + id).once('value', (snapshot) => {
-            if(snapshot.exists()) {
-                const userData = snapshot.val();
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                openUserDashboard(userData.name, userData.id);
-            } else {
-                status.style.color = "var(--danger)";
-                status.innerText = "এই আইডি পাওয়া যায়নি!";
-            }
-        });
+        const users = getUsers();
+        if(users[id]) {
+            const userData = users[id];
+            localStorage.setItem('sys_currentUser', JSON.stringify(userData));
+            openUserDashboard(userData.name, userData.id);
+        } else {
+            status.style.color = "var(--danger)";
+            status.innerText = "এই আইডি পাওয়া যায়নি! আগে রেজিস্টার করুন।";
+        }
     }
 
     function openUserDashboard(name, id) {
@@ -282,64 +278,65 @@
         document.getElementById('admin-login-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.add('hidden');
         document.getElementById('user-dashboard').classList.remove('hidden');
+        
         document.getElementById('dash-name').innerText = name;
         document.getElementById('dash-id').innerText = id;
         loadUserStats(id);
     }
 
     function logout() {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('sys_currentUser');
         showHome();
     }
 
-    // হাজিরা প্রদান ও লোকেশন ট্র্যাকিং
+    // ৩. হাজিরা ও জিপিএস ট্র্যাকিং (বাটনে চাপ দিলে পারমিশন চাইবে)
     function submitAttendance() {
         const status = document.getElementById('attendance-status');
-        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const user = JSON.parse(localStorage.getItem('sys_currentUser'));
         const todayDate = new Date().toISOString().split('T')[0];
 
         status.style.color = "var(--primary)";
-        status.innerText = "লোকেশন যাচাই করা হচ্ছে...";
+        status.innerText = "জিপিএস লোকেশন নেওয়া হচ্ছে...";
 
-        // চেক করা ইউজার আজ অলরেডি প্রেজেন্ট দিয়েছে কি না
-        db.ref('attendance/' + user.id + '_' + todayDate).once('value', (snapshot) => {
-            if(snapshot.exists()) {
-                status.style.color = "var(--danger)";
-                status.innerText = "আপনি আজকের হাজিরা ইতিমধ্যে দিয়েছেন!";
-                return;
-            }
+        const attendanceList = getAttendance();
+        const alreadyDone = attendanceList.find(a => a.id === user.id && a.date === todayDate);
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const lat = pos.coords.latitude.toFixed(5);
-                    const lon = pos.coords.longitude.toFixed(5);
-                    const time = new Date().toLocaleString();
+        if(alreadyDone) {
+            status.style.color = "var(--danger)";
+            status.innerText = "আপনি আজকের হাজিরা ইতিমধ্যে দিয়ে ফেলেছেন!";
+            return;
+        }
 
-                    const attendanceData = {
-                        name: user.name,
-                        id: user.id,
-                        date: todayDate,
-                        time: time,
-                        location: `Lat: ${lat}, Lon: ${lon}`
-                    };
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude.toFixed(4);
+                const lon = pos.coords.longitude.toFixed(4);
+                const time = new Date().toLocaleTimeString();
 
-                    db.ref('attendance/' + user.id + '_' + todayDate).set(attendanceData, (error) => {
-                        if(!error) {
-                            status.style.color = "var(--success)";
-                            status.innerText = "উপস্থিতি সফলভাবে সংরক্ষিত হয়েছে!";
-                            loadUserStats(user.id);
-                        }
-                    });
-                }, (err) => {
-                    showCustomError("লোকেশন পারমিশন পাওয়া যায়নি! দয়া করে জিপিএস অন করুন।");
-                }, { enableHighAccuracy: true, timeout: 10000 });
-            } else {
-                showCustomError("আপনার ডিভাইস লোকেশন সাপোর্ট করে না।");
-            }
-        });
+                const record = {
+                    key: Date.now(),
+                    name: user.name,
+                    id: user.id,
+                    date: todayDate,
+                    time: time,
+                    location: `Lat: ${lat}, Lon: ${lon}`
+                };
+
+                attendanceList.push(record);
+                setAttendance(attendanceList);
+
+                status.style.color = "var(--success)";
+                status.innerText = "✅ উপস্থিতি সফলভাবে রেকর্ড করা হয়েছে!";
+                loadUserStats(user.id);
+
+            }, (err) => {
+                showCustomError("লোকেশন পারমিশন পাওয়া যায়নি! অনুগ্রহ করে আপনার মোবাইলের GPS অন করুন।");
+            }, { enableHighAccuracy: true, timeout: 12000 });
+        } else {
+            showCustomError("আপনার ব্রাউজারে লোকেশন সাপোর্ট করে না।");
+        }
     }
 
-    // ফানি এরর মডাল প্রদর্শন
     function showCustomError(msg) {
         document.getElementById('error-modal-msg').innerText = msg;
         document.getElementById('error-modal').classList.remove('hidden');
@@ -350,18 +347,25 @@
         document.getElementById('error-modal').classList.add('hidden');
     }
 
-    // ইউজারের স্ট্যাটাস লোড
     function loadUserStats(id) {
-        db.ref('attendance/').orderByChild('id').equalTo(id).once('value', (snapshot) => {
-            let count = 0;
-            if(snapshot.exists()) {
-                count = Object.keys(snapshot.val()).length;
-            }
-            document.getElementById('present-count').innerText = count + " দিন";
-        });
+        const attendanceList = getAttendance();
+        const userRecords = attendanceList.filter(a => a.id === id);
+        document.getElementById('present-count').innerText = userRecords.length + " দিন";
+
+        const todayDate = new Date().toISOString().split('T')[0];
+        const isTodayDone = userRecords.some(a => a.date === todayDate);
+        
+        const stateElem = document.getElementById('today-status');
+        if(isTodayDone) {
+            stateElem.innerText = "সম্পন্ন";
+            stateElem.style.color = "var(--success)";
+        } else {
+            stateElem.innerText = "বাকি আছে";
+            stateElem.style.color = "var(--danger)";
+        }
     }
 
-    // এডমিন ভেরিফিকেশন (Password: rabby11)
+    // ৪. এডমিন পাসওয়ার্ড ভেরিফিকেশন (rabby11)
     function verifyAdmin() {
         const pin = document.getElementById('adminPinInput').value;
         const status = document.getElementById('admin-login-status');
@@ -372,80 +376,49 @@
             loadAdminData();
         } else {
             status.style.color = "var(--danger)";
-            status.innerText = "ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন (rabby11)";
+            status.innerText = "ভুল পাসওয়ার্ড! পাসওয়ার্ড হলো: rabby11";
         }
     }
 
-    // নোটিশ সিস্টেম
     function updateNotice() {
         const noticeText = document.getElementById('noticeInput').value;
-        db.ref('settings/notice').set(noticeText, () => {
-            alert("নোটিশ সফলভাবে আপডেট হয়েছে!");
-        });
+        if(noticeText) {
+            localStorage.setItem('sys_notice', noticeText);
+            alert("নোটিশ পরিবর্তন করা হয়েছে!");
+            loadNotice();
+        }
     }
 
     function loadNotice() {
-        db.ref('settings/notice').on('value', (snapshot) => {
-            const notice = snapshot.val() || "কোনো নতুন নোটিশ নেই।";
-            document.getElementById('user-notice').innerText = "📢 নোটিশ: " + notice;
-        });
+        const notice = localStorage.getItem('sys_notice') || "সময়মত অফিসে উপস্থিত থাকুন।";
+        document.getElementById('user-notice').innerText = "📢 নোটিশ: " + notice;
     }
 
-    // এরর মিডিয়া আপডেট
-    function updateErrorMedia() {
-        const url = document.getElementById('errorMediaInput').value;
-        db.ref('settings/errorMedia').set(url, () => {
-            alert("এরর মিডিয়া লিংক আপডেট হয়েছে!");
-        });
-    }
-
-    // এডমিন প্যানেল ডাটা লোড ও ম্যানেজমেন্ট
     function loadAdminData() {
         const table = document.getElementById('admin-attendance-logs');
-        db.ref('attendance/').on('value', (snapshot) => {
-            table.innerHTML = '';
-            const data = snapshot.val();
-            if(data) {
-                Object.entries(data).forEach(([key, item]) => {
-                    table.innerHTML += `<tr>
-                        <td>${item.name}</td>
-                        <td>${item.id}</td>
-                        <td>${item.time}</td>
-                        <td>${item.location}</td>
-                        <td><button class="btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteAttendance('${key}')">রিমুভ</button></td>
-                    </tr>`;
-                });
-            } else {
-                table.innerHTML = `<tr><td colspan="5">কোনো উপস্থিতি পাওয়া যায়নি।</td></tr>`;
-            }
-        });
-    }
+        const attendanceList = getAttendance();
+        table.innerHTML = '';
 
-    function deleteAttendance(key) {
-        if(confirm("আপনি কি এই রেকর্ডটি মুছে ফেলতে চান?")) {
-            db.ref('attendance/' + key).remove();
+        if(attendanceList.length > 0) {
+            attendanceList.reverse().forEach(item => {
+                table.innerHTML += `<tr>
+                    <td>${item.name}</td>
+                    <td>${item.id}</td>
+                    <td>${item.time}</td>
+                    <td>${item.location}</td>
+                    <td><button class="btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="deleteLog(${item.key})">রিমুভ</button></td>
+                </tr>`;
+            });
+        } else {
+            table.innerHTML = `<tr><td colspan="5">এখনো কেউ হাজিরা দেয়নি।</td></tr>`;
         }
     }
 
-    // রিপোর্ট ডাউনলোড (CSV)
-    function exportToCSV() {
-        db.ref('attendance/').once('value', (snapshot) => {
-            const data = snapshot.val();
-            if(!data) {
-                alert("ডাউনলোড করার মতো কোনো ডাটা নেই!");
-                return;
-            }
-            let csv = "Name,ID,Date,Time,Location\n";
-            Object.values(data).forEach(item => {
-                csv += `"${item.name}","${item.id}","${item.date}","${item.time}","${item.location}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'attendance_report.csv');
-            a.click();
-        });
+    function deleteLog(key) {
+        let attendanceList = getAttendance();
+        attendanceList = attendanceList.filter(a => a.key !== key);
+        setAttendance(attendanceList);
+        loadAdminData();
     }
 </script>
 </body>
