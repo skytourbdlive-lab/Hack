@@ -134,6 +134,8 @@
                 </div>
             </div>
 
+            <p id="location-status" style="text-align: center; font-size: 13px; color: var(--secondary); margin-bottom: 15px; font-weight: 600;"></p>
+
             <button class="btn btn-success" id="btn-checkin" onclick="checkIn()"><i class="fas fa-sign-in-alt"></i> চেক-ইন করুন</button>
             <button class="btn btn-danger" id="btn-checkout" onclick="checkOut()"><i class="fas fa-sign-out-alt"></i> চেক-আউট করুন</button>
             
@@ -171,11 +173,11 @@
             <button class="btn btn-primary" onclick="saveAdminSettings()">সেটিংস আপডেট করুন</button>
 
             <hr style="margin: 20px 0; border: 0.5px solid #E5E7EB;">
-            <h3>কর্মীদের তালিকা</h3>
+            <h3>কর্মীদের তালিকা ও লোকেশন</h3>
             <div class="input-group" style="margin-top: 10px;">
                 <input type="text" id="search-emp" placeholder="নাম বা আইডি দিয়ে খুঁজুন..." onkeyup="searchEmployee()">
             </div>
-            <div id="employee-list" style="max-height: 200px; overflow-y: auto; font-size: 14px;">
+            <div id="employee-list" style="max-height: 250px; overflow-y: auto; font-size: 14px;">
                 <!-- List will generate here -->
             </div>
         </div>
@@ -187,8 +189,13 @@
 
     <script>
         // --- 1. Global Configurations ---
-        const REQUIRED_WIFI_IP = "10.160.91.10";
         const ADMIN_PASS = "Rabbi11";
+        
+        // Office GPS Location (Mesh Network Office)
+        const OFFICE_LAT = 23.885038;
+        const OFFICE_LNG = 90.324319;
+        const ALLOWED_RADIUS = 50; // In meters (অফিস থেকে সর্বোচ্চ ৫০ মিটারের ভেতর থাকতে হবে)
+
         let currentUser = null;
         
         // Mock Database for testing (Replace with Firebase Firestore later)
@@ -232,7 +239,7 @@
             document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-US', { hour12: true });
         }
 
-        // --- 4. Network & IP Checking ---
+        // --- 4. Network Checking ---
         window.addEventListener('offline', checkNetwork);
         window.addEventListener('online', checkNetwork);
         function checkNetwork() {
@@ -241,15 +248,19 @@
             else { alert.classList.add('hidden'); }
         }
 
-        async function verifyWifiIP() {
-            // Note: In real world browser JS can't easily read local IP 10.x.x.x without WebRTC hacks. 
-            // This is a simulation placeholder. For strict local IP checking, a backend is best.
-            // For now, we simulate success to keep the app working.
-            console.log(`Checking if connected to Router IP: ${REQUIRED_WIFI_IP}`);
-            return true; // Simulate true. 
+        // --- 5. Geolocation Math (Haversine Formula) ---
+        function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth's radius in meters
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; 
         }
 
-        // --- 5. User Functions ---
+        // --- 6. User Functions ---
         function registerUser() {
             const name = document.getElementById('reg-name').value;
             const phone = document.getElementById('reg-phone').value;
@@ -257,9 +268,11 @@
 
             if(!name || !phone || !id) return alert("সব তথ্য পূরণ করুন!");
 
-            currentUser = { name, phone, id, present: 0, absent: 0, late: 0, device: navigator.userAgent };
+            currentUser = { 
+                name, phone, id, present: 0, absent: 0, late: 0, 
+                device: navigator.userAgent, lastLocationLink: "" 
+            };
             
-            // Save to mock DB
             let existing = usersData.find(u => u.id === id);
             if(!existing) usersData.push(currentUser);
             else currentUser = existing;
@@ -288,13 +301,25 @@
             document.getElementById('stat-late').innerText = currentUser.late || 0;
         }
 
-        async function checkIn() {
-            const validIP = await verifyWifiIP();
-            if(!validIP) return alert("আপনি অফিসের ওয়াইফাই (10.160.91.10) এ যুক্ত নেই!");
-
-            // Geolocation check
+        function checkIn() {
             if (navigator.geolocation) {
+                document.getElementById('location-status').innerHTML = "লোকেশন চেক করা হচ্ছে, অপেক্ষা করুন...";
+                
                 navigator.geolocation.getCurrentPosition((pos) => {
+                    const userLat = pos.coords.latitude;
+                    const userLng = pos.coords.longitude;
+                    
+                    // Calculate distance from office
+                    const distance = getDistanceFromLatLonInM(OFFICE_LAT, OFFICE_LNG, userLat, userLng);
+                    
+                    if (distance > ALLOWED_RADIUS) {
+                        document.getElementById('location-status').innerHTML = `<span style="color:red;"><i class="fas fa-times-circle"></i> আপনি অফিস থেকে ${Math.round(distance)} মিটার দূরে আছেন!</span>`;
+                        return alert(`চেক-ইন বাতিল! আপনি অফিস থেকে ${Math.round(distance)} মিটার দূরে আছেন। অফিসের ৫০ মিটারের ভেতর থেকে চেষ্টা করুন।`);
+                    }
+
+                    // Create a Google Maps Link for Admin
+                    currentUser.lastLocationLink = `https://www.google.com/maps?q=${userLat},${userLng}`;
+                    
                     const timeNow = new Date().toTimeString().slice(0,5);
                     let status = "Present";
                     
@@ -309,11 +334,15 @@
                         alert("চেক-ইন সফল হয়েছে!");
                     }
                     
+                    // Display success message on User UI
+                    document.getElementById('location-status').innerHTML = `<i class="fas fa-map-marker-alt"></i> লোকেশন ভেরিফাইড! আপনি অফিস থেকে ${Math.round(distance)} মিটার দূরে আছেন।`;
+                    
                     updateUserDB();
                     loadDashboardData();
                 }, (error) => {
-                    alert("লোকেশন পারমিশন অন করুন!");
-                });
+                    document.getElementById('location-status').innerHTML = "";
+                    alert("লোকেশন পারমিশন অন করুন! লোকেশন ছাড়া হাজিরা দেওয়া যাবে না।");
+                }, { enableHighAccuracy: true }); // High accuracy for better GPS tracking
             } else {
                 alert("আপনার ডিভাইস লোকেশন সাপোর্ট করে না।");
             }
@@ -340,7 +369,7 @@
             localStorage.setItem('usersData', JSON.stringify(usersData));
         }
 
-        // --- 6. Admin Panel Functions (Hidden Logic) ---
+        // --- 7. Admin Panel Functions (Hidden Logic) ---
         function promptAdmin() {
             const pass = prompt("Enter Admin Secret Key:");
             if(pass === ADMIN_PASS) {
@@ -381,10 +410,19 @@
             const list = document.getElementById('employee-list');
             list.innerHTML = '';
             data.forEach(user => {
+                let locBadge = user.lastLocationLink 
+                    ? `<a href="${user.lastLocationLink}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none;"><i class="fas fa-map-marker-alt"></i> ম্যাপে দেখুন</a>` 
+                    : `<span style="color:var(--danger)">লোকেশন পাওয়া যায়নি</span>`;
+                
                 list.innerHTML += `
-                    <div style="background:#F3F4F6; color:#000; padding:10px; border-radius:5px; margin-bottom:5px;">
+                    <div style="background:#F3F4F6; color:#000; padding:12px; border-radius:5px; margin-bottom:8px; border-left: 4px solid var(--primary);">
                         <strong>${user.name}</strong> (${user.id})<br>
-                        <span style="font-size:12px">Present: ${user.present} | Late: ${user.late} | Absent: ${user.absent}</span>
+                        <div style="font-size:12px; margin-top:5px; margin-bottom:5px;">
+                            Present: <strong>${user.present}</strong> | Late: <strong>${user.late}</strong> | Absent: <strong>${user.absent}</strong>
+                        </div>
+                        <div style="font-size:12px;">
+                            ${locBadge}
+                        </div>
                     </div>
                 `;
             });
@@ -397,9 +435,9 @@
         }
 
         function exportCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,Name,ID,Phone,Present,Late,Absent\n";
+            let csvContent = "data:text/csv;charset=utf-8,Name,ID,Phone,Present,Late,Absent,Last_Location\n";
             usersData.forEach(e => {
-                let row = `${e.name},${e.id},${e.phone},${e.present},${e.late},${e.absent}`;
+                let row = `${e.name},${e.id},${e.phone},${e.present},${e.late},${e.absent},${e.lastLocationLink || 'N/A'}`;
                 csvContent += row + "\n";
             });
             const encodedUri = encodeURI(csvContent);
